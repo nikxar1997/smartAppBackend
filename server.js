@@ -183,7 +183,7 @@ app.post("/api/device/", (req, res, next) => {
     value: req.body.value,
   };
   var sql =
-    "INSERT INTO devices (roomid,deviceid,name,category,value) VALUES (?,?,?,?)";
+    "INSERT INTO devices (roomid,deviceid,name,category,value) VALUES (?,?,?,?,?)";
   var params = [
     data.roomid,
     data.deviceid,
