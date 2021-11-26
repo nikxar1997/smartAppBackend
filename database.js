@@ -54,6 +54,36 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         }
       }
     );
+
+    db.run(
+      `CREATE TABLE IF NOT EXISTS devicecategories(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category text UNIQUE,
+        ) `,
+      (err) => {
+        if (err) {
+          //Table already created
+        } 
+        // else {
+        //   //Table just created, creating some rows
+        //   var insert = "INSERT INTO devicecategories (category) VALUES (?)";
+        //   db.run(insert, ["climate"]);
+        // }
+      }
+    );
+    db.run(
+      `CREATE TABLE IF NOT EXISTS roomcategories(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category text UNIQUE,
+        ) `,
+      (err) => {
+        if (err) {
+          //Table already created
+        } else {
+          //Table just created, creating some rows
+        }
+      }
+    );
   }
 });
 

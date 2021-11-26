@@ -242,12 +242,41 @@ app.delete("/api/device/:deviceid", (req, res, next) => {
         res.status(400).json({ error: err.message });
         return;
       }
-      res.json({
-        message: "success",
-        data: rows,
-      });
+      res.json({ message: "deleted", changes: this.changes });
     }
   );
+});
+
+//Get all device categories
+app.get("/api/devicecategories", (req, res, next) => {
+  var sql = "select * from devicecategories";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+//Get all room categories
+app.get("/api/roomcategories", (req, res, next) => {
+  var sql = "select * from roomcategories";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
 });
 
 // Default response for any other request
