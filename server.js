@@ -181,15 +181,19 @@ app.post("/api/device/", (req, res, next) => {
     name: req.body.name,
     category: req.body.category,
     value: req.body.value,
+    status: req.body.status,
+    timer: req.body.timer,
   };
   var sql =
-    "INSERT INTO devices (roomid,deviceid,name,category,value) VALUES (?,?,?,?,?)";
+    "INSERT INTO devices (roomid,deviceid,name,category,value,status,timer) VALUES (?,?,?,?,?,?,?)";
   var params = [
     data.roomid,
     data.deviceid,
     data.name,
     data.category,
     data.value,
+    data.status,
+    data.timer,
   ];
   db.run(sql, params, function (err, result) {
     if (err) {
@@ -210,14 +214,25 @@ app.patch("/api/device/:deviceid", (req, res, next) => {
     name: req.body.name,
     category: req.body.category,
     value: req.body.value,
+    status: req.body.status,
+    timer: req.body.timer,
   };
   db.run(
     `UPDATE devices set 
         name = COALESCE(?,name),
         category = COALESCE(?,category),
-        value = COALESCE(?,value)
+        value = COALESCE(?,value),
+        status = COALESCE(?,status),
+        timer = COALESCE(?,timer)
         WHERE deviceid = ?`,
-    [data.name, data.category, data.value, req.params.deviceid],
+    [
+      data.name,
+      data.category,
+      data.value,
+      data.status,
+      data.timer,
+      req.params.deviceid,
+    ],
     function (err, result) {
       if (err) {
         res.status(400).json({ error: err.message });

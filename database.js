@@ -22,9 +22,9 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
           //Table already created
         } else {
           //Table just created, creating some rows
-          var insert =
-            "INSERT INTO rooms (roomid,name,category) VALUES (?,?,?)";
-          db.run(insert, ["room1", "Living room", "livingroom"]);
+          // var insert =
+          //   "INSERT INTO rooms (roomid,name,category) VALUES (?,?,?)";
+          // db.run(insert, ["room1", "Living room", "livingroom"]);
         }
       }
     );
@@ -36,21 +36,23 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             name text,
             category text,
             value text,
+            status text,
+            timer integer,
         ) `,
       (err) => {
         if (err) {
           //Table already created
         } else {
           //Table just created, creating some rows
-          var insert =
-            "INSERT INTO devices (roomid,deviceid,name,category,value) VALUES (?,?,?,?,?)";
-          db.run(insert, [
-            "room1",
-            "device1",
-            "Air condition 1",
-            "climate",
-            "24",
-          ]);
+          // var insert =
+          //   "INSERT INTO devices (roomid,deviceid,name,category,value) VALUES (?,?,?,?,?)";
+          // db.run(insert, [
+          //   "room1",
+          //   "device1",
+          //   "Air condition 1",
+          //   "climate",
+          //   "24",
+          // ]);
         }
       }
     );
