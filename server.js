@@ -2,7 +2,7 @@
 var express = require("express");
 var app = express();
 var db = require("./database.js");
-var md5 = require("body-parser");
+var md5 = require("md5");
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -290,6 +290,95 @@ app.get("/api/roomcategories", (req, res, next) => {
     res.json({
       message: "success",
       data: rows,
+    });
+  });
+});
+
+//Get all users
+app.get("/api/users", (req, res, next) => {
+  var sql = "select * from users";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+//Add a new user
+app.post("/api/register/", (req, res, next) => {
+  var errors = [];
+  if (!req.body.name) {
+    errors.push("Name not inserted");
+  }
+  if (!req.body.email) {
+    errors.push("Email not specified");
+  }
+  if (!req.body.password) {
+    errors.push("Password not inserted");
+  }
+
+  var data = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+  };
+  var sql = "INSERT INTO users (name,email,password) VALUES (?,?,?)";
+  var params = [data.name, data.email, data.password];
+  db.run(sql, params, function (err, result) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: data,
+      id: this.lastID,
+    });
+  });
+});
+
+//Delete a user
+app.delete("/api/user/:id", (req, res, next) => {
+  db.run("DELETE FROM users WHERE id=?", req.params.id, function (err, result) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({ message: "deleted", changes: this.changes });
+  });
+});
+
+app.post("/api/login/", (req, res, next) => {
+  var errors = [];
+  if (!req.body.email) {
+    errors.push("Email not specified");
+  }
+  if (!req.body.password) {
+    errors.push("Password not inserted");
+  }
+
+  var data = {
+    name: "res",
+    email: req.body.email,
+    password: req.body.password,
+  };
+  var sql = "SELECT * FROM users WHERE email = ? and password = ?";
+  var params = [data.email, data.password];
+  db.all(sql, params, function (err, result) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: result,
+      id: this.lastID,
     });
   });
 });

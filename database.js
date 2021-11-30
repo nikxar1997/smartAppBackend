@@ -65,7 +65,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
       (err) => {
         if (err) {
           //Table already created
-        } 
+        }
         // else {
         //   //Table just created, creating some rows
         //   var insert = "INSERT INTO devicecategories (category) VALUES (?)";
@@ -77,6 +77,23 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
       `CREATE TABLE IF NOT EXISTS roomcategories(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             category text UNIQUE,
+        ) `,
+      (err) => {
+        if (err) {
+          //Table already created
+        } else {
+          //Table just created, creating some rows
+        }
+      }
+    );
+
+    db.run(
+      `CREATE TABLE IF NOT EXISTS users(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name text,
+            email text UNIQUE,
+            password text,
+            CONSTRAINT email_unique UNIQUE (email)
         ) `,
       (err) => {
         if (err) {
