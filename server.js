@@ -68,9 +68,28 @@ app.post("/api/room/", (req, res, next) => {
     roomid: req.body.roomid,
     name: req.body.name,
     category: req.body.category,
+    temperature: req.body.temperature,
+    humidity: req.body.humidity,
+    pm10: req.body.pm10,
+    pm25: req.body.pm25,
+    no2: req.body.no2,
+    co: req.body.co,
+    o3: req.body.o3,
   };
-  var sql = "INSERT INTO rooms (roomid,name,category) VALUES (?,?,?)";
-  var params = [data.roomid, data.name, data.category];
+  var sql =
+    "INSERT INTO rooms (roomid,name,category,temperature,humidity,pm10,pm25,no2,co,o3) VALUES (?,?,?,?,?,?,?,?,?,?)";
+  var params = [
+    data.roomid,
+    data.name,
+    data.category,
+    data.temperature,
+    data.humidity,
+    data.pm10,
+    data.pm25,
+    data.no2,
+    data.co,
+    data.o3,
+  ];
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });
