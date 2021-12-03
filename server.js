@@ -68,28 +68,9 @@ app.post("/api/room/", (req, res, next) => {
     roomid: req.body.roomid,
     name: req.body.name,
     category: req.body.category,
-    temperature: req.body.temperature,
-    humidity: req.body.humidity,
-    pm10: req.body.pm10,
-    pm25: req.body.pm25,
-    no2: req.body.no2,
-    co: req.body.co,
-    o3: req.body.o3,
   };
-  var sql =
-    "INSERT INTO rooms (roomid,name,category,temperature,humidity,pm10,pm25,no2,co,o3) VALUES (?,?,?,?,?,?,?,?,?,?)";
-  var params = [
-    data.roomid,
-    data.name,
-    data.category,
-    data.temperature,
-    data.humidity,
-    data.pm10,
-    data.pm25,
-    data.no2,
-    data.co,
-    data.o3,
-  ];
+  var sql = "INSERT INTO rooms (roomid,name,category) VALUES (?,?,?)";
+  var params = [data.roomid, data.name, data.category];
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -194,23 +175,28 @@ app.post("/api/device/", (req, res, next) => {
   if (!req.body.value) {
     errors.push("No value specified");
   }
+  if (!req.body.sensor) {
+    errors.push("No sensor values specified");
+  }
   var data = {
     roomid: req.body.roomid,
     deviceid: req.body.deviceid,
     name: req.body.name,
     category: req.body.category,
     value: req.body.value,
+    sensor: req.body.sensor,
     status: req.body.status,
     timer: req.body.timer,
   };
   var sql =
-    "INSERT INTO devices (roomid,deviceid,name,category,value,status,timer) VALUES (?,?,?,?,?,?,?)";
+    "INSERT INTO devices (roomid,deviceid,name,category,value,sensor,status,timer) VALUES (?,?,?,?,?,?,?,?)";
   var params = [
     data.roomid,
     data.deviceid,
     data.name,
     data.category,
     data.value,
+    data.sensor,
     data.status,
     data.timer,
   ];
@@ -233,6 +219,7 @@ app.patch("/api/device/:deviceid", (req, res, next) => {
     name: req.body.name,
     category: req.body.category,
     value: req.body.value,
+    sensor: req.body.sensor,
     status: req.body.status,
     timer: req.body.timer,
   };
@@ -241,6 +228,7 @@ app.patch("/api/device/:deviceid", (req, res, next) => {
         name = COALESCE(?,name),
         category = COALESCE(?,category),
         value = COALESCE(?,value),
+        sensor = COALESCE(?,sensor),
         status = COALESCE(?,status),
         timer = COALESCE(?,timer)
         WHERE deviceid = ?`,
@@ -248,6 +236,7 @@ app.patch("/api/device/:deviceid", (req, res, next) => {
       data.name,
       data.category,
       data.value,
+      data.sensor,
       data.status,
       data.timer,
       req.params.deviceid,
