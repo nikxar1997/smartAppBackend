@@ -391,6 +391,22 @@ app.post("/api/login/", (req, res, next) => {
   });
 });
 
+//Get devices history
+app.get("/api/history", (req, res, next) => {
+  var sql = "select * from history";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
 // Default response for any other request
 app.use(function (req, res) {
   res.status(404);
