@@ -103,34 +103,6 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         }
       }
     );
-
-    db.run(
-      `CREATE TABLE IF NOT EXISTS history(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            category text,
-            deviceid text,
-            month text,
-            day text,
-            year text,
-            temperature integer,
-            sensorTemperature integer,
-            humidity integer,
-            sensorHumidity integer,
-            pm10 integer,
-            pm25 integer,
-            pressure integer,
-            no2 integer,
-            co2 integer,
-            co integer,
-        ) `,
-      (err) => {
-        if (err) {
-          //Table already created
-        } else {
-          //Table just created, creating some rows
-        }
-      }
-    );
   }
 });
 
