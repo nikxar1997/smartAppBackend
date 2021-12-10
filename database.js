@@ -103,6 +103,39 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         }
       }
     );
+
+    //Climate devices
+    db.run(
+      `CREATE TABLE IF NOT EXISTS users(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            K text,
+            roomid text,
+            PM10 integer,
+            PM25 integer,
+            rawTemperature integer,
+            pressure integer,
+            rawHumidity integer,
+            gasResistance integer,
+            iaq integer,
+            iaqAccuracy integer,
+            temperature integer,
+            humidity integer,
+            staticlag integer,
+            co2Equivalent integer,
+            breathVocEquivalent integer,
+            month text,
+            day text,
+            year text,
+            time text,
+        ) `,
+      (err) => {
+        if (err) {
+          //Table already created
+        } else {
+          //Table just created, creating some rows
+        }
+      }
+    );
   }
 });
 
