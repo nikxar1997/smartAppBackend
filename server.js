@@ -68,9 +68,18 @@ app.post("/api/room/", (req, res, next) => {
     roomid: req.body.roomid,
     name: req.body.name,
     category: req.body.category,
+    upperTemp: req.body.upperTemp,
+    lowerTemp: req.body.lowerTemp,
   };
-  var sql = "INSERT INTO rooms (roomid,name,category) VALUES (?,?,?)";
-  var params = [data.roomid, data.name, data.category];
+  var sql =
+    "INSERT INTO rooms (roomid,name,category,upperTemp,lowerTemp) VALUES (?,?,?,?,?)";
+  var params = [
+    data.roomid,
+    data.name,
+    data.category,
+    data.upperTemp,
+    data.lowerTemp,
+  ];
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -89,13 +98,23 @@ app.patch("/api/room/:roomid", (req, res, next) => {
   var data = {
     name: req.body.name,
     category: req.body.category,
+    upperTemp: req.body.upperTemp,
+    lowerTemp: req.body.lowerTemp,
   };
   db.run(
     `UPDATE rooms set
         name=COALESCE(?,name),
-        category=COALESCE(?,category)
+        category=COALESCE(?,category),
+        upperTemp=COALESCE(?,upperTemp),
+        lowerTemp=COALESCE(?,lowerTemp)
         WHERE roomid=?`,
-    [data.name, data.category, req.params.roomid],
+    [
+      data.name,
+      data.category,
+      data.upperTemp,
+      data.lowerTemp,
+      req.params.roomid,
+    ],
     function (err, result) {
       if (err) {
         res.status(400).json({ error: err.message });

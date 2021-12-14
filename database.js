@@ -16,6 +16,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             roomid text UNIQUE,
             name text,
             category text,
+            upperTemp integer,
+            lowerTemp integer,
         )`,
       (err) => {
         if (err) {
