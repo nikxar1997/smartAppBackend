@@ -506,6 +506,88 @@ app.delete("/api/climatedevice/:K", (req, res, next) => {
   );
 });
 
+//Get device history
+app.get("/api/devicehistory", (req, res, next) => {
+  var sql = "select * from devicehistory";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+//Add historic data to device
+app.post("/api/devicehistory/", (req, res, next) => {
+  var errors = [];
+  if (!req.body.K) {
+    errors.push("No device id specified");
+  }
+  if (!req.body.roomid) {
+    errors.push("No room id specified");
+  }
+  var data = {
+    K: req.body.K,
+    roomid: req.body.roomid,
+    PM10: req.body.PM10,
+    PM25: req.body.PM25,
+    rawTemperature: req.body.rawTemperature,
+    pressure: req.body.pressure,
+    rawHumidity: req.body.rawHumidity,
+    gasResistance: req.body.gasResistance,
+    iaq: req.body.iaq,
+    iaqAccuracy: req.body.iaqAccuracy,
+    temperature: req.body.temperature,
+    humidity: req.body.humidity,
+    staticlag: req.body.staticlag,
+    co2Equivalent: req.body.co2Equivalent,
+    breathVocEquivalent: req.body.breathVocEquivalent,
+    month: req.body.month,
+    day: req.body.day,
+    year: req.body.year,
+    time: req.body.time,
+  };
+  var sql =
+    "INSERT INTO devicehistory (K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  var params = [
+    data.K,
+    data.roomid,
+    data.PM10,
+    data.PM25,
+    data.rawTemperature,
+    data.pressure,
+    data.rawHumidity,
+    data.gasResistance,
+    data.iaq,
+    data.iaqAccuracy,
+    data.temperature,
+    data.humidity,
+    data.staticlag,
+    data.co2Equivalent,
+    data.breathVocEquivalent,
+    data.month,
+    data.day,
+    data.year,
+    data.time,
+  ];
+  db.run(sql, params, function (err, result) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: data,
+      id: this.lastID,
+    });
+  });
+});
+
 // Default response for any other request
 app.use(function (req, res) {
   res.status(404);
