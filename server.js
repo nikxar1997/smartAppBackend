@@ -70,15 +70,19 @@ app.post("/api/room/", (req, res, next) => {
     category: req.body.category,
     upperTemp: req.body.upperTemp,
     lowerTemp: req.body.lowerTemp,
+    upperHum: req.body.upperHum,
+    lowerHum: req.body.lowerHum,
   };
   var sql =
-    "INSERT INTO rooms (roomid,name,category,upperTemp,lowerTemp) VALUES (?,?,?,?,?)";
+    "INSERT INTO rooms (roomid,name,category,upperTemp,lowerTemp,upperHum,lowerHum) VALUES (?,?,?,?,?,?,?)";
   var params = [
     data.roomid,
     data.name,
     data.category,
     data.upperTemp,
     data.lowerTemp,
+    data.upperHum,
+    data.lowerHum,
   ];
   db.run(sql, params, function (err, result) {
     if (err) {
@@ -100,19 +104,25 @@ app.patch("/api/room/:roomid", (req, res, next) => {
     category: req.body.category,
     upperTemp: req.body.upperTemp,
     lowerTemp: req.body.lowerTemp,
+    upperHum: req.body.upperHum,
+    lowerHum: req.body.lowerHum,
   };
   db.run(
     `UPDATE rooms set
         name=COALESCE(?,name),
         category=COALESCE(?,category),
         upperTemp=COALESCE(?,upperTemp),
-        lowerTemp=COALESCE(?,lowerTemp)
+        lowerTemp=COALESCE(?,lowerTemp),
+        upperHum=COALESCE(?,upperHum),
+        lowerHum=COALESCE(?,lowerHum)
         WHERE roomid=?`,
     [
       data.name,
       data.category,
       data.upperTemp,
       data.lowerTemp,
+      data.upperHum,
+      data.lowerHum,
       req.params.roomid,
     ],
     function (err, result) {

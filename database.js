@@ -18,6 +18,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             category text,
             upperTemp integer,
             lowerTemp integer,
+            upperHum integer,
+            lowerHum integer
         )`,
       (err) => {
         if (err) {
