@@ -62,22 +62,6 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     );
 
     db.run(
-      `CREATE TABLE IF NOT EXISTS devicecategories(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            category text UNIQUE,
-        ) `,
-      (err) => {
-        if (err) {
-          //Table already created
-        }
-        // else {
-        //   //Table just created, creating some rows
-        //   var insert = "INSERT INTO devicecategories (category) VALUES (?)";
-        //   db.run(insert, ["climate"]);
-        // }
-      }
-    );
-    db.run(
       `CREATE TABLE IF NOT EXISTS roomcategories(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             category text UNIQUE,
@@ -112,6 +96,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS climatedevices(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name text,
             K text,
             roomid text,
             PM10 integer,
@@ -131,6 +116,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             day text,
             year text,
             time text,
+            ssid text,
+            password text,
         ) `,
       (err) => {
         if (err) {
@@ -145,6 +132,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS devicehistory(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name,
             K text,
             roomid text,
             PM10 integer,
@@ -175,5 +163,23 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     );
   }
 });
+
+//Climate device categories
+db.run(
+  `CREATE TABLE IF NOT EXISTS devicecategories(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name text,
+        K text UNIQUE,
+        type text,
+        sensors text,
+    ) `,
+  (err) => {
+    if (err) {
+      //Table already created
+    } else {
+      //Table just created, creating some rows
+    }
+  }
+);
 
 module.exports = db;

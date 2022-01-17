@@ -299,22 +299,6 @@ app.delete("/api/device/:deviceid", (req, res, next) => {
   );
 });
 
-//Get all device categories
-app.get("/api/devicecategories", (req, res, next) => {
-  var sql = "select * from devicecategories";
-  var params = [];
-  db.all(sql, params, (err, rows) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: rows,
-    });
-  });
-});
-
 //Get all room categories
 app.get("/api/roomcategories", (req, res, next) => {
   var sql = "select * from roomcategories";
@@ -483,10 +467,13 @@ app.post("/api/climatedevice/", (req, res, next) => {
     day: req.body.day,
     year: req.body.year,
     time: req.body.time,
+    ssid: req.body.ssid,
+    password: req.body.password,
   };
   var sql =
-    "INSERT INTO climatedevices (K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    "INSERT INTO climatedevices (name,K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   var params = [
+    data.name,
     data.K,
     data.roomid,
     data.PM10,
@@ -506,6 +493,8 @@ app.post("/api/climatedevice/", (req, res, next) => {
     data.day,
     data.year,
     data.time,
+    data.ssid,
+    data.password,
   ];
   db.run(sql, params, function (err, result) {
     if (err) {
@@ -520,7 +509,7 @@ app.post("/api/climatedevice/", (req, res, next) => {
   });
 });
 
-//Delete a user
+//Delete a device
 app.delete("/api/climatedevice/:K", (req, res, next) => {
   db.run(
     "DELETE FROM climatedevices WHERE K=?",
@@ -531,6 +520,91 @@ app.delete("/api/climatedevice/:K", (req, res, next) => {
         return;
       }
       res.json({ message: "deleted", changes: this.changes });
+    }
+  );
+});
+
+//Update a device
+app.patch("/api/climatedevice/:K", (req, res, next) => {
+  var data = {
+    roomid: req.body.roomid,
+    PM10: req.body.PM10,
+    PM25: req.body.PM25,
+    rawTemperature: req.body.rawTemperature,
+    pressure: req.body.pressure,
+    rawHumidity: req.body.rawHumidity,
+    gasResistance: req.body.gasResistance,
+    iaq: req.body.iaq,
+    iaqAccuracy: req.body.iaqAccuracy,
+    temperature: req.body.temperature,
+    humidity: req.body.humidity,
+    staticlag: req.body.staticlag,
+    co2Equivalent: req.body.co2Equivalent,
+    breathVocEquivalent: req.body.breathVocEquivalent,
+    month: req.body.month,
+    day: req.body.day,
+    year: req.body.year,
+    time: req.body.time,
+    ssid: req.body.ssid,
+    password: req.body.password,
+  };
+  db.run(
+    `UPDATE climatedevices set 
+    name = COALESCE(?,name),
+    roomid = COALESCE(?,roomid),
+    PM10 = COALESCE(?,PM10),
+    PM25 = COALESCE(?,PM25),
+    rawTemperature = COALESCE(?,rawTemperature),
+    pressure = COALESCE(?,pressure),
+    rawHumidity = COALESCE(?,rawHumidity),
+    gasResistance = COALESCE(?,gasResistance),
+    iaq = COALESCE(?,iaq),
+    iaqAccuracy = COALESCE(?,iaqAccuracy),
+    temperature = COALESCE(?,temperature),
+    humidity = COALESCE(?,humidity),
+    staticlag = COALESCE(?,staticlag),
+    co2Equivalent = COALESCE(?,co2Equivalent),
+    breathVocEquivalent = COALESCE(?,breathVocEquivalent),
+    month = COALESCE(?,month),
+    day = COALESCE(?,day), 
+    year = COALESCE(?,year),
+    time = COALESCE(?,time),
+    ssid = COALESCE(?,ssid),
+    password = COALESCE(?,password)
+    WHERE K = ?`,
+    [
+      data.roomid,
+      data.PM10,
+      data.PM25,
+      data.rawTemperature,
+      data.pressure,
+      data.rawHumidity,
+      data.gasResistance,
+      data.iaq,
+      data.iaqAccuracy,
+      data.temperature,
+      data.humidity,
+      data.staticlag,
+      data.co2Equivalent,
+      data.breathVocEquivalent,
+      data.month,
+      data.day,
+      data.year,
+      data.time,
+      data.ssid,
+      data.password,
+      req.params.K,
+    ],
+    function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: "success",
+        data: data,
+        changes: this.changes,
+      });
     }
   );
 });
@@ -615,6 +689,82 @@ app.post("/api/devicehistory/", (req, res, next) => {
       id: this.lastID,
     });
   });
+});
+
+//Get all device categories
+app.get("/api/devicecategories", (req, res, next) => {
+  var sql = "select * from devicecategories";
+  var params = [];
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+//Get device by id
+app.get("/api/devicecategories/:K", (req, res, next) => {
+  var sql = "select * from devicecategories where K = ?";
+  var params = [req.params.deviceid];
+  db.get(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+//Add a new category
+app.post("/api/devicecategory/", (req, res, next) => {
+  var errors = [];
+  if (!req.body.K) {
+    errors.push("No device id specified");
+  }
+
+  var data = {
+    name: req.body.name,
+    K: req.body.K,
+    type: req.body.type,
+    sensors: req.body.sensors,
+  };
+  var sql =
+    "INSERT INTO devicecategories (name,K,type,sensors) VALUES (?,?,?,?)";
+  var params = [data.K, data.type, data.sensors];
+  db.run(sql, params, function (err, result) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: data,
+      id: this.lastID,
+    });
+  });
+});
+
+//Delete a device category
+app.delete("/api/devicecategories/:K", (req, res, next) => {
+  db.run(
+    "DELETE FROM devicecategories WHERE K=?",
+    req.params.K,
+    function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ message: "deleted", changes: this.changes });
+    }
+  );
 });
 
 // Default response for any other request
