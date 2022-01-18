@@ -708,9 +708,9 @@ app.get("/api/devicecategories", (req, res, next) => {
 });
 
 //Get device by id
-app.get("/api/devicecategories/:K", (req, res, next) => {
+app.get("/api/devicecategory/:K", (req, res, next) => {
   var sql = "select * from devicecategories where K = ?";
-  var params = [req.params.deviceid];
+  var params = [req.params.K];
   db.get(sql, params, (err, row) => {
     if (err) {
       res.status(400).json({ error: err.message });
