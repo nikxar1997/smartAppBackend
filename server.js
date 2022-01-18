@@ -469,9 +469,10 @@ app.post("/api/climatedevice/", (req, res, next) => {
     time: req.body.time,
     ssid: req.body.ssid,
     password: req.body.password,
+    ip: req.body.ip,
   };
   var sql =
-    "INSERT INTO climatedevices (name,K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    "INSERT INTO climatedevices (name,K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   var params = [
     data.name,
     data.K,
@@ -495,6 +496,7 @@ app.post("/api/climatedevice/", (req, res, next) => {
     data.time,
     data.ssid,
     data.password,
+    data.ip,
   ];
   db.run(sql, params, function (err, result) {
     if (err) {
@@ -527,6 +529,7 @@ app.delete("/api/climatedevice/:K", (req, res, next) => {
 //Update a device
 app.patch("/api/climatedevice/:K", (req, res, next) => {
   var data = {
+    name: req.body.name,
     roomid: req.body.roomid,
     PM10: req.body.PM10,
     PM25: req.body.PM25,
@@ -547,6 +550,7 @@ app.patch("/api/climatedevice/:K", (req, res, next) => {
     time: req.body.time,
     ssid: req.body.ssid,
     password: req.body.password,
+    ip: req.body.ip,
   };
   db.run(
     `UPDATE climatedevices set 
@@ -570,9 +574,11 @@ app.patch("/api/climatedevice/:K", (req, res, next) => {
     year = COALESCE(?,year),
     time = COALESCE(?,time),
     ssid = COALESCE(?,ssid),
-    password = COALESCE(?,password)
+    password = COALESCE(?,password),
+    ip = COALESCE(?,ip)
     WHERE K = ?`,
     [
+      data.name,
       data.roomid,
       data.PM10,
       data.PM25,
@@ -593,6 +599,7 @@ app.patch("/api/climatedevice/:K", (req, res, next) => {
       data.time,
       data.ssid,
       data.password,
+      data.ip,
       req.params.K,
     ],
     function (err, result) {
@@ -654,9 +661,12 @@ app.post("/api/devicehistory/", (req, res, next) => {
     day: req.body.day,
     year: req.body.year,
     time: req.body.time,
+    ssid: req.body.ssid,
+    password: req.body.password,
+    ip: req.body.ip,
   };
   var sql =
-    "INSERT INTO devicehistory (K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    "INSERT INTO devicehistory (K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   var params = [
     data.K,
     data.roomid,
@@ -677,6 +687,9 @@ app.post("/api/devicehistory/", (req, res, next) => {
     data.day,
     data.year,
     data.time,
+    data.ssid,
+    data.password,
+    data.ip,
   ];
   db.run(sql, params, function (err, result) {
     if (err) {
