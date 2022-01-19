@@ -118,6 +118,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             time text,
             ssid text,
             password text,
+            ip text,
         ) `,
       (err) => {
         if (err) {
@@ -132,7 +133,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS devicehistory(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name,
+            name text,
             K text,
             roomid text,
             PM10 integer,
@@ -152,6 +153,9 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             day text,
             year text,
             time text,
+            ssid text,
+            password text,
+            ip text,
         ) `,
       (err) => {
         if (err) {

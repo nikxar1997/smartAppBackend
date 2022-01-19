@@ -448,6 +448,7 @@ app.post("/api/climatedevice/", (req, res, next) => {
     errors.push("No room id specified");
   }
   var data = {
+    name: req.body.name,
     K: req.body.K,
     roomid: req.body.roomid,
     PM10: req.body.PM10,
@@ -642,6 +643,7 @@ app.post("/api/devicehistory/", (req, res, next) => {
     errors.push("No room id specified");
   }
   var data = {
+    name: req.body.name,
     K: req.body.K,
     roomid: req.body.roomid,
     PM10: req.body.PM10,
@@ -666,8 +668,9 @@ app.post("/api/devicehistory/", (req, res, next) => {
     ip: req.body.ip,
   };
   var sql =
-    "INSERT INTO devicehistory (K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    "INSERT INTO devicehistory (name,K,roomid,PM10,PM25,rawTemperature,pressure,rawHumidity,gasResistance,iaq,iaqAccuracy,temperature,humidity,staticlag,co2Equivalent,breathVocEquivalent,month,day,year,time,ssid,password,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
   var params = [
+    data.name,
     data.K,
     data.roomid,
     data.PM10,
@@ -702,6 +705,21 @@ app.post("/api/devicehistory/", (req, res, next) => {
       id: this.lastID,
     });
   });
+});
+
+//Delete a device history
+app.delete("/api/devicehistory/:K", (req, res, next) => {
+  db.run(
+    "DELETE FROM devicehistory WHERE K=?",
+    req.params.K,
+    function (err, result) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ message: "deleted", changes: this.changes });
+    }
+  );
 });
 
 //Get all device categories
@@ -751,7 +769,7 @@ app.post("/api/devicecategory/", (req, res, next) => {
   };
   var sql =
     "INSERT INTO devicecategories (name,K,type,sensors) VALUES (?,?,?,?)";
-  var params = [data.K, data.type, data.sensors];
+  var params = [data.name, data.K, data.type, data.sensors];
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });
