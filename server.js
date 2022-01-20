@@ -766,10 +766,27 @@ app.post("/api/devicecategory/", (req, res, next) => {
     K: req.body.K,
     type: req.body.type,
     sensors: req.body.sensors,
+    SSID: req.body.SSID,
+    PASSWD: req.body.PASSWD,
+    BROKER_IP: req.body.BROKER_IP,
+    BROKER_PORT: req.body.BROKER_PORT,
+    BR_USER: req.body.BR_USER,
+    BR_PASSWD: req.body.BR_PASSWD,
   };
   var sql =
-    "INSERT INTO devicecategories (name,K,type,sensors) VALUES (?,?,?,?)";
-  var params = [data.name, data.K, data.type, data.sensors];
+    "INSERT INTO devicecategories (name,K,type,sensors,SSID,PASSWD,BROKER_IP,BROKER_PORT,BR_USER,BR_PASSWD) VALUES (?,?,?,?,?,?,?,?,?,?)";
+  var params = [
+    data.name,
+    data.K,
+    data.type,
+    data.sensors,
+    data.SSID,
+    data.PASSWD,
+    data.BROKER_IP,
+    data.BROKER_PORT,
+    data.BR_USER,
+    data.BR_PASSWD,
+  ];
   db.run(sql, params, function (err, result) {
     if (err) {
       res.status(400).json({ error: err.message });

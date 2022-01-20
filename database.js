@@ -176,6 +176,12 @@ db.run(
         K text UNIQUE,
         type text,
         sensors text,
+        SSID text,
+        PASSWD: text,
+        BROKER_IP: text,
+        BROKER_PORT: text,
+        BR_USER: text,
+        BR_PASSWD: text,
     ) `,
   (err) => {
     if (err) {
